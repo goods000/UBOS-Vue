@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+	</head>
+	<body>
+		<h1 class="h1 di"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>我的团队</h1>
+		<div class="team" id="app" v-cloak>
+			<div class="top">
+				<img src="img/logo.png" alt="" class="touxiang">
+				<div class="l">
+					<p class="name">
+						{{user.username}}
+						<span id="grade">
+							<img src="img/grade.png">
+							<i>{{user.communityLevel}}</i>
+						</span>
+					</p>
+					<p class="id">UID:{{user.userId}}</p>
+				</div>
+				<!-- <p class="txt">累计业绩<span class="num">{{account.childAssets}}</span></p> -->
+				<div class="info">
+					<ul>
+						<li>
+							我的直推：<span>{{list.length}}</span>
+						</li>
+						<li>
+							<!-- 团队总人数 -->累计业绩：<span style="color:#E69F20;">{{account.childAssets}}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<p class="p_title">
+				<img src="img/zu.png"/>
+				<span>我的直推</span>
+				<img src="img/zu.png"/>
+			</p>
+			<div class="list">
+				<ul>
+					<li v-for="item in list ">
+						<div class="info">
+							<div class="div">
+								<div class="img">
+									<img v-show="item.avatar==null" src="img/logo.png" class="touxiang">
+									<img v-show="user.avatar!=null" :src="item.avatar" class="touxiang">
+								</div>
+								<div class="l">
+									<p class="name">
+										{{item.username}}
+										<span id="grade">
+											<img src="img/grade.png">
+											<i>{{item.communityLevel}}</i>
+										</span>
+									</p>
+									<p class="id">UID:{{item.userId}}</p>
+								</div>
+							</div>
+							<div class="r">
+								<p class="num">团队业绩：<span>{{item.leftAssets}}</span></p>
+								<p class="time">注册时间：<span>{{item.createTime}}</span></p>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+	</body>
+	
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+
+var vm = new Vue({
+   	el:'#app',
+   	data:{
+   		currency:null,
+   		user:{username:null},
+   		account:{},
+   		list:{},
+
+   	},
+   	methods: {
+   		getUser: function(){
+   			$.get(baseURL + "user/info", function(r){
+   				isLogin(r);
+
+   				vm.user = r.user;
+   				console.log(r.user);
+   				vm.account = r.account;
+   			});
+   		},
+   		getList: function(){
+			$.get(baseURL + "user/team", function(r){
+				isLogin(r);
+				vm.list = r.list;
+			});
+		},
+   		getSessionCurrency: function(){
+   			this.currency=getCurrency();
+   		}
+   	},
+   	created: function(){
+           this.getUser();
+           this.getList();
+           this.getSessionCurrency();
+       }
+});
+</script>
+</html>

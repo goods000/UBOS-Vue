@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+	    <style type="text/css">
+	    	.form_lock{background: #1A242D;margin: -5px 10px;border-radius: 15px;}
+	    	.bb{margin-bottom: 0px;background: none;}
+	    	.title_box{margin-top: 20px;}
+	    	.e_btn{margin-top: 0px;background: none;}
+	    </style>
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1">
+			<button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>
+			申请合伙人
+			<a href="node_record.html">申请记录</a>
+		</h1>
+		<div v-show="show==0">
+			<img src="img/banner.png" class="banner"/>
+			<form action="" method="post" class="form_lock">
+				<div class="bb">
+					<div class="with">
+						<p>申请人姓名</p>
+						<div class="with_box">
+							<img src="img/p_username.png"/>
+							<input type="text" placeholder="请输入您的真实姓名"  v-model="apply.realname"/>
+						</div>
+					</div>
+					<div class="with">
+						<p>联系方式</p>
+						<div class="with_box">
+							<img src="img/p_phone.png"/>
+							<input type="number" placeholder="请输入您的联系电话" v-model="apply.mobile"/>
+						</div>
+					</div>
+					<div class="with">
+						<p>申请等级</p>
+						<div class="with_box">
+							<input class="radio_type" type="radio" name="type" value="1" v-model="apply.level"/>
+							<label for="radio1">节点人</label>
+							<input class="radio_type" type="radio" name="type" value="2" v-model="apply.level"/> 
+							<label for="radio2">超级节点人</label>
+						</div>
+					</div>
+					
+					<div class="with">
+						<p>交易密码</p>
+						<div class="with_box">
+							<img src="img/psd.png"/>
+							<input type="password" class="re_pwd" placeholder="请输入您的交易密码" v-model="apply.payPassword"/>
+						</div>
+					</div>
+					
+					
+				</div>
+				
+				<div class="e_btn">
+					<input type="button" id="sub" class="yzbutton" value="提交申请" @click="nodeApply"/>
+					<div class="title_box">
+						<div>
+							1.申请提交后请耐心等待工作人员与您联系，请保持电话通畅。
+						</div>
+						<div>
+							2.代理等级只能存在一种，请在申请前慎重考虑。
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>	
+		
+		<div class="on" v-show="show==1">
+			<img src="img/1.png" class="shen1"/>
+			<p>申请资料已经提交</p>
+			<p>请耐心等待工作人员审核</p>
+		</div>
+		
+		<!-- <div class="on" v-show="show==200">
+			<img src="img/2.png" class="shen1"/>
+			<p>申请已拒绝</p>
+			<a>重新申请</a>
+		</div> -->
+		
+		<div class="on" v-show="show==2">
+			<img src="img/3.png" class="shen1"/>
+			<p>恭喜您</p>
+			<p>申请节点人已通过审核</p>
+		</div>
+	</div>
+	</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		show:200,
+		apply:{level:1}
+	},
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		index: function(){
+			$.get(baseURL + "node/apply/index", function(r){
+				isLogin(r);
+				//0没有申请记录  1有申请记录 2已经是
+				vm.show=r.code;
+			});
+		},
+		nodeApply: function(){
+			if(vm.validator()){return;}
+			
+			$.ajax({
+	            type: "POST",
+	            contentType:"application/json",
+	            url:baseURL +'node/apply/apply',
+	            data:md5Method(vm.apply),
+	            async: false,
+	            success: function(r) {
+	            	isLogin(r);
+	            	if(r.code==0){
+						alert('提交成功', function(){
+							vm.index();
+						});
+					}else{
+						alert(r.msg);
+					}
+	            }
+	        });
+		},
+		validator: function () {
+            if(isBlank(vm.apply.realname)){
+                alert("请输入姓名");
+                return true;
+            }
+			if(isBlank(vm.apply.payPassword)){
+                alert("请输入交易密码");
+                return true;
+            }
+           	if(!isMobile(vm.apply.mobile)){
+                   alert("手机格式不正确");
+                   return true;
+   			}
+        },
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getUser();
+        this.index();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

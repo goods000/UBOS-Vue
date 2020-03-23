@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+	    <style type="text/css">
+	    	.form .e_btn {min-height: calc(100vh - 258px);}
+	    </style>
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1 di"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>修改昵称</h1>
+		<form class="form">
+			<div class="bb">
+				<div class="with">
+					<p>昵称</p>
+					<div class="with_box">
+						<img src="img/login_username.png"/>
+						<input type="text"  readonly="readonly" v-model="user.username" />
+					</div>
+				</div>
+				<div class="with">
+					<p>新昵称</p>
+					<div class="with_box">
+						<img src="img/login_username.png"/>
+						<input type="text" placeholder="请输入新昵称" v-model="update.username"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="e_btn">
+				<input type="button" id="sub" class="yzbutton" value="确认修改" @click="updateInfo"/>
+			</div>
+		</form>
+	</div>
+	</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript" src="js/zhaler/verify.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		update:{},
+	},
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				console.log(this.user);
+				vm.account = r.account;
+			});
+		},
+		updateInfo: function(){
+			if(isBlank(vm.update.username)){
+                alert("请输入新昵称");
+                return true;
+            }
+			$.ajax({
+	            type: "POST",
+	            contentType:"application/json",
+	            url:baseURL +'user/safety/username',
+	            data:md5Method(vm.update),
+	            async: false,
+	            success: function(r) {
+	            	isLogin(r);
+	            	if(r.code==0){
+						alert('修改成功', function(){
+							$.cookie('username', vm.update.username);
+							window.location.href=loginURL;
+						});
+					}else{
+						alert(r.msg);
+					}
+	            }
+	        });
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getUser();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

@@ -1,0 +1,56 @@
+/*公共样式*/
+*{margin: 0px;padding: 0px;font-size: 14px;font-family: "microsoft yahei";list-style: none;text-decoration: none;}
+input[type=button], input[type=submit], input[type=file], button { cursor: pointer; -webkit-appearance: none; }
+input,button,select{outline:none;-webkit-appearance: none;}
+body{background: #fff;}
+
+/*头部*/
+.h1{background:none;text-align: center;font-weight: 500;font-size: 1.3rem;padding:10px 0;color: #FFFFFF;width: 100%;}
+.h1 s{font-size: 18px;color: #FFFFFF;}
+.h1 a{position: absolute;font-size: 14px;right: 15px;top:15px;color: #FFFFFF;}
+.h1 a span{color: #999;font-size: 14px;}
+.h1 button{position: absolute;top:13px;left: 10px;background: none;border: 0px;font-size: 20px;color: #FFFFFF;}
+.di{margin-bottom: 8px;}
+
+.logo{width:100%;text-align: center;color: #fff;}
+.logo img{display: block;width: 20%;margin: auto;margin-bottom: 3%;    padding-top: 15%;}
+.logo h2{font-size:1.4rem;font-weight: 500;}
+.logo p{font-size: 1.2rem;}
+.login input{width:100%;outline: none;background: none;border: 0px;padding: 0px 8%;;color: #fff;
+box-sizing: border-box;font-size: 14px;box-sizing: border-box;}
+.login input.code{width: 66%;}
+.login input.tu_code{width: 75%;}
+.login input::-webkit-input-placeholder{color: #f7f7f7 !important;}
+input::-webkit-input-placeholder{color:#f7f7f7 !important;}
+/*.login input:focus{border-bottom:1px solid #42c2a8;transition-duration:0.7s;}*/
+.login{width: 100%;margin: auto;border-radius:5px;padding:10px 10%;text-align: right;box-sizing: border-box;}
+.login h2{text-align: left;color: #333;font-weight: 500;font-size: 25px;margin-bottom: 20px;}
+.login h2 a{color: #666;padding-bottom:5px;}
+.login h2 a:nth-child(2){margin-left: 20px;}
+.login form .a{color: #fff;margin-top:10px;text-decoration: none;}
+.locgin_i .img{width: 8%;}
+.locgin_i{position: relative;display: flex;align-items: center;border-bottom: 1px solid #999;padding:12px 5px;}
+.shouji p{background: #f0f3ff;padding: 10px;box-sizing: border-box;color: #185cc7;border-radius: 0 0 5px 5px;margin-top: -15px;margin-bottom: 10px;}
+.get_code{width: 28%;height:44px;display: block;position: absolute;right:2%;line-height: 44px;color:#E69F20;}
+.get_code1{display:none;width:30%;height:44px;position: absolute;right:2%;line-height: 44px;font-size: 12px;color:#E69F20;}
+#J_second{color: #E69F20;font-size:12px;}
+.tijiao{
+	background: #E69F20 !important; /* 标准的语法 */	
+	color:#FFFFFF !important;font-size: 16px !important;padding: 10px 45px !important;border-radius: 5px;}
+.login .a_box{display: flex;align-items: center;justify-content: space-between;}
+.login .a_box a{color: #eee;}
+#tu_img{width: 80px;height:30px;position: absolute;top: 10px;right: 5px;}
+#tu_img1{width: 80px;height:30px;position: absolute;top: 10px;right: 5px;}
+canvas{width: 100%;height: 100%;}
+#code_img {width: 100%;height: 100%;cursor: pointer;vertical-align: top;}
+#code_img1 {width: 100%;height: 100%;cursor: pointer;vertical-align: top;}
+
+
+.nav{width: 100%;display: flex;align-items: center;justify-content: space-around;margin-top: -10px;border-radius:15px 15px 0 0;}
+.nav .a{color: #fff;font-size: 1.1rem;text-align: center;height: 3rem;line-height: 3rem;margin-top: 0px;}
+.nav .active{color: #1F1F1F;border-bottom: 1px solid #E69F20;color: #E69F20;}
+.two{display: none;}
+
+
+.xia{background: rgba(255,255,255,0.3);color: #0B1417;border-radius: 25px;padding: 5px;border: 1px solid #fff;display: block;
+    width: 30%;text-align: center;margin: 5% auto;font-weight: bold;}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1 di"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>兑换<a href="convert_record.html">兑换记录</a></h1>
+		<form action="" method="post" class="form_exchange">
+			<div class="bb">
+				<div class="with">
+					<p>兑换比率</p>
+					<span class="span" v-show="convert.sendType=='usdt'">1(USDT)≈{{scale}}(UBOS)</span>
+					<span class="span" v-show="convert.sendType=='ubos'">{{scale}}(USDT)≈1(UBOS)</span>
+				</div>
+				<div class="with">
+					<p>兑换数量</p>
+					<div class="with_box">
+						<img src="img/unm.png"/>
+						<input type="number" placeholder="请输入兑换数量" v-model="convert.sendNum"/>
+						<span class="span" @click="stud">全部兑换</span>
+					</div>
+				</div>
+				<p class="yue" v-show="convert.sendType=='usdt'">当前USDT余额为:{{account.usdtNum}}</p>
+				<p class="yue" v-show="convert.sendType=='ubos'">当前UBOS余额为:{{account.ubosNum}}</p>
+			</div>
+			<div class="bb">
+				<div class="with">
+					<p>兑换金额</p>
+					<input type="text" readonly="readonly" v-model="convert.receiveNum" placeholder="请输入兑换金额"/>
+				</div>
+				<div class="with">
+					<p>交易密码</p>
+					<div class="with_box">
+						<img src="img/psd.png"/>
+						<input type="password" placeholder="请输入您的交易密码" v-model="convert.payPassword" />
+					</div>
+				</div>
+			</div>
+			
+			<div class="e_btn">
+				<input type="button" id="sub" class="yzbutton" value="确认兑换" @click="convertApply"/>
+			</div>
+		</form>
+	</div>
+	</body>
+	
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		scale:1,
+		convert:{sendNum:null,receiveNum:null}
+	},
+	watch: {
+		deep: true,
+		immediate: true,
+		'convert.sendNum': function () {
+			if(this.convert.sendNum==null)return;
+            this.convert.receiveNum = (this.convert.sendNum*this.scale).toFixed(2);
+        }
+    },
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		getScale: function(){
+			$.get(baseURL + "convert/scale/"+getParameter("currType"), function(r){
+				isLogin(r);
+				vm.scale = r.scale;
+			});
+		},
+		stud: function(){
+			if(vm.convert.sendType=='usdt'){
+				vm.convert.sendNum=vm.account.usdtNum;
+			}else if(vm.convert.sendType=='ubos'){
+				vm.convert.sendNum=vm.account.ubosNum;
+			}
+			
+		},
+		convertApply: function(){
+			if(vm.validator()){return;}
+			
+			$.ajax({
+	            type: "POST",
+	            contentType:"application/json",
+	            url:baseURL +'convert/convert',
+	            data:md5Method(vm.convert),//JSON.stringify(vm.cash)
+	            async: false,
+	            success: function(r) {
+	            	isLogin(r);
+	            	if(r.code==0){
+						alert('兑换成功', function(){
+							vm.getUser();
+							vm.convert.sendNum=null;
+							vm.convert.receiveNum=null;
+							vm.convert.password=null;
+						});
+					}else{
+						alert(r.msg);
+					}
+	            }
+	        });
+		},
+		validator: function () {
+            if(isBlank(vm.convert.sendNum)){
+                alert("请输入数量");
+                return true;
+            }
+           	if(isBlank(vm.convert.payPassword)){
+                  alert("请输入交易密码");
+                  return true;
+   			}
+        },
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+		this.convert.sendType=getParameter("currType")
+        this.getUser();
+        this.getScale();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

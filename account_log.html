@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+</head>
+<body>
+	<div id="app" v-cloak>
+	<div class="record">
+		<h1 class="h1"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>资金明细</h1>
+		<div class="num_box">
+			<p class="num" v-show="currType=='usdt'">{{account.usdtNum}}</p>
+			<p class="num" v-show="currType=='ubos'">{{account.ubosNum}}</p>
+			<p class="num" v-show="currType=='repeat'">{{account.repeatNum}}</p>
+			<p class="num" v-show="currType=='privately'">{{account.privatelyNum}}</p>
+		</div>
+	</div>
+	<div class="tixn_record re">
+		<ul>
+			<li v-for="log in list">
+				<p>
+					<template v-if="log.sceneType==='active'">
+	            		激活
+	            	</template>	
+	            	<template v-else-if="log.sceneType==='cashApply'">
+	            		提币申请
+	            	</template>	
+	            	<template v-else-if="log.sceneType==='cashRefuse'">
+	            		提币拒绝
+	            	</template>
+					<template v-else-if="log.sceneType==='apply_node'">
+	            		节点申请
+	            	</template>	
+	            	<template v-else-if="log.sceneType==='apply_node_refuse'">
+	            		节点拒绝
+	            	</template>
+	            	<template v-else-if="log.sceneType==='lock'">
+	            		锁仓
+	            	</template>	
+	            	<template v-else-if="log.sceneType==='convert'">
+	            		兑换
+	            	</template>
+	            	<template v-else-if="log.sceneType==='dial'">
+	            		系统赠送
+	            	</template>
+	            	<template v-else-if="log.sceneType==='imports'">
+	            		充值
+	            	</template>
+	            	<template v-else-if="log.sceneType==='push'">
+	            		加速奖
+	            	</template>	
+					<template v-else-if="log.sceneType==='interest'">
+	            		静态奖
+	            	</template>
+	            	<template v-else-if="log.sceneType==='block'">
+	            		区块奖
+	            	</template>
+	            	<template v-else-if="log.sceneType==='community'">
+	            		社区奖
+	            	</template>
+	            	<template v-else-if="log.sceneType==='node'">
+	            		节点奖
+	            	</template>
+	            	<template v-else-if="log.sceneType==='release'">
+	            		私募释放
+	            	</template>
+	            	<template v-else-if="log.sceneType==='privately_interest'">
+	            		私募利息
+	            	</template>
+					<template v-else-if="log.sceneType==='sendWallet'">
+	            		转账
+	            	</template>
+					<template v-else-if="log.sceneType==='receiveWallet'">
+	            		接收
+	            	</template>
+					<template v-else-if="log.sceneType==='recharge'">
+	            		充值
+	            	</template>
+	            	<template v-else>
+	            		忘记的类型
+	            	</template>
+				</p>
+				<i>{{log.amount}}</i>
+				<!-- <div><s>流水账号：</s>5464654131354843513515313513135454</div> -->
+				<div class="time" v-show="log.remark!=null"><s>备注：</s>{{log.remark}}</div>
+				<p class="t">{{log.createTime}}</p>
+			</li>
+		</ul>
+	</div>
+	</div>
+</body>
+
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		currType:null,
+		user:{username:null},
+		account:{},
+		list:{}
+	},
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		getList: function(){
+			$.get(baseURL + "accountLog/list/"+getParameter("currType"), function(r){
+				isLogin(r);
+				vm.list = r.list;
+			});
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+		this.currType=getParameter("currType")
+		this.getUser();
+        this.getList();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

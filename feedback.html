@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/font.css" />
+</head>
+<style>
+.teamss ul li img {
+	width: 6%;
+	display: block;
+	float: left;
+	margin-right: 4%;
+	padding-top: 15px;
+}
+
+.teamss ul li span {
+	float: right;
+}
+
+.teamss ul li {
+	padding: 0 10px;
+	background: #1A242D;
+	overflow: hidden;
+}
+
+.teamss ul li p {
+	border-bottom: 1px solid #dbdbdb;
+	padding: 15px 0;
+	width: 90%;
+	float: right;
+	box-sizing: border-box;
+}
+
+.teamss ul div {
+	height: 10px;
+	background: #eee;
+	width: 100%;
+}
+
+.teamss ul li:nth-child(even) p {
+	border-bottom: 0px;
+}
+
+.teamss ul li:nth-child(even) {
+	margin-bottom: 10px;
+}
+
+body {
+	font-size: 12px;
+}
+
+#header {
+	width: 370px;
+	height: 55px;
+	margin: 0 auto;
+}
+
+#feedback {
+	display: block;
+	height: 50px;
+	overflow: hidden;
+	width: 170px;
+	font-size: 24px;
+	line-height: 50px;
+	color: #FFF;
+	font-weight: bold;
+	float: left;
+	background: #1766AF;
+}
+
+#go-back {
+	padding-top: 30px;
+	float: right;
+}
+
+#container {
+	width: 100%;
+	margin: 0 auto;
+}
+
+#about-feedback {
+	width: 100%;
+	font-size: 13px;
+	margin: 0 auto;
+	padding: 10px;
+	margin-bottom: 10px;
+	background: #1A242D;
+	box-sizing: border-box;
+	padding: 5px 2.5%;
+	color: #999;
+}
+
+#feedback-content {
+	width: 100%;
+	margin: 0 auto;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+#content {
+	width: 96%;
+	height: 200px;
+	resize: none;
+	outline: none;
+	font-size: 14px;
+	border: 0px;
+	display: block;
+	background: #1A242D;
+	color: #fff;
+	padding: 2%;
+}
+
+#sub {
+	width: 100%;
+	background: linear-gradient(to right,#E69F20,#D09A36);
+    font-size: 16px;
+    letter-spacing: 2px;
+	border: 0px;
+	color: #fff;
+	padding: 10px 0;
+	border-radius: 5px;
+	margin-top: 10%;
+	display:block;
+	text-align:center;
+}
+
+#now-length {
+	color: #c4ccce;
+	font-size: 24px;
+	margin-right: 0px;
+}
+
+#title {
+	margin: 10px 0;
+}
+
+#title input {
+	height: 20px;
+	font-size: 14px;
+	width: 200px;
+}
+
+#length-note {
+	width: 100%;
+	text-align: right;
+	background: #1A242D;
+	padding: 10px;
+	box-sizing: border-box;
+	color: #c4ccce;
+}
+
+#title select {
+	width: 100%;
+	border: 0px;
+	background: none;
+	background: #1A242D;
+	padding: 10px;
+	color: #999;
+}
+
+#title input {
+	width: 100%;
+	border: 0px;
+	background: none;
+	background: #1A242D;
+	padding: 10px;
+	color: #999;
+}
+
+option{color: #999;}
+.oppin {
+	display: flex;
+}
+
+.oppin div {
+	margin: 1%;
+}
+
+.shangchuan {
+	padding: 10px;
+}
+
+.shangchuan h1 {
+	font-weight: 600;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+#preview {
+	height: 10vh !important;
+	overflow: hidden !important;
+}
+.oppiin .opin{width:30vw;margin:1%;background:url(img/chuan.png);background-size:100% 100%;height:20vw;position: relative;}
+.oppiin .opin input{width: 30vw;position:absolute;top:0px;left:0px;z-index:9; height: 20vw;opacity: 0;}
+    .image{width:30vw;height:20vw;position:absolute;top:0px;left:0px;overflow:hidden;}
+    .image img{width:100%;display:block;}
+    select{color: #333;}
+    h1{color: #fff;padding: 10px;}
+/*修改textarea默认属性*/
+textarea::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #c4ccce;
+}
+textarea:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #c4ccce;
+}
+textarea::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #c4ccce;
+}
+textarea::-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #c4ccce;
+}
+</style>
+<body style="background: #111520;">
+	<h1 class="h1">
+		<button class="diu iconfont icon-xiangzuo1"
+			onclick="javascript:window.history.back(-1);"></button>
+		意见反馈
+	</h1>
+	<div id="app" >
+	<div id="container" class="ge" >
+		<div id="about-feedback">非常感谢您的支持和关注，请在这里留下您宝贵的意见和建议！（内容至少10个字）
+		</div>
+		<div id="feedback-content">
+			<form   enctype="multipart/form-data" id="author_form">
+				<!-- <div id="title">
+					<select id="quzhi"  >
+						<option value="">选择反馈意见类型</option>
+						<option value="">系统界面建议</option>
+						<option value="">系统制度建议</option>
+						<option value="">系统体验感建议</option>
+					</select>
+				</div> -->
+				<div id="title">
+					<input type="text" placeholder="标题" v-model="feed.title" />
+				</div>
+				<textarea id="content" placeholder="请输入反馈意见最少不能少于10个字最多不能超过255个字"  v-model="feed.content"></textarea>
+				<div id="length-note">
+					您还可以输入 <label id="now-length">{{upperLimit-feed.content.length}}</label> 字!
+				</div>
+				<h1>上传图片</h1>
+				<div class="oppiin" style="width:100%;display: flex;">
+					<div class="opin">
+						 	<input type="file" @change="img1" accept="image/*"/>
+						    <div   class="image">
+						        <!-- <img id="image1" src="" /> -->
+						        <i v-show="img1Url==null"><img id="image1"/></i>
+								<i v-show="img1Url!=null"><img id="image1" :src="img1Url"/></i>
+						    </div>
+	    			</div>
+	    			<div class="opin">
+						<input type="file" @change="img2" accept="image/*">
+						<div  class="image">
+						        <!-- <img id="image2" src="" /> -->
+						        <i v-show="img2Url==null"><img id="image2"/></i>
+								<i v-show="img2Url!=null"><img id="image2" :src="img2Url"/></i>
+						 </div>
+					</div>
+					<div class="opin">
+						<input type="file" @change="img3" accept="image/*">
+						<div class="image">
+						        <!-- <img id="image2" src="" /> -->
+						        <i v-show="img3Url==null"><img id="image3"/></i>
+								<i v-show="img3Url!=null"><img id="image3" :src="img3Url"/></i>
+						    </div>
+					</div>
+					</div>
+				
+				<div class="shangchuan">
+					
+				<!-- 	<div class="oppin">
+						<div id="drop_area"></div>
+						<div id="drop_area2"></div>
+						<div id="drop_area3"></div>
+					</div>
+				</div> -->
+				<div>
+					<button type="button" id="sub" :disabled="feed.content.length>upperLimit||feed.content.length<lowerLimit" @click="update"> 确认</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	</div>
+</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript">
+
+var vm = new Vue({
+	el:'#app',
+	data:{
+		url:null,
+		currency:null,
+		feed:{content:""},
+		upperLimit:255,
+		lowerLimit:10,
+		img1Url:null,
+		img2Url:null,
+		img3Url:null
+		
+	},
+	methods: {
+		preview: function(file,img) {//纯前端预览时调用 有上传接口不需要调用
+			console.log(file);
+			console.log("file.size = " + file.size);
+			
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				img.src = e.target.result;
+			}
+			reader.readAsDataURL(file);
+	 	},
+		upload: function(file){
+	        var formData = new FormData();
+	        formData.append("file",file);
+	        //formData.append("id", id);
+	         $.ajax({
+	            url: baseURL +"/oss/uploadImage",
+	            type: 'POST',
+	            async : false,
+	            data: formData,
+	            processData: false,// ⑧告诉jQuery不要去处理发送的数据
+	            contentType: false, // ⑨告诉jQuery不要去设置Content-Type请求头
+	            success: function (r) {
+	            	if(r.code==0){
+	            		console.log("1:"+r.data.serverPath);
+	            		vm.url=r.data.serverPath;
+	            	}else{
+	            		alert(r.msg);
+	            		return;
+	            	}
+	            }
+	        });
+	     },
+	     img1: function(event){
+	    	var file=event.target.files[0];
+	    	if (file.size>1048576) {//单位为byte
+				alert('上传图片不能超过1MB，请重新选择!');
+				return;
+			}
+	    	
+			//var img = document.getElementById("image1");
+			//vm.preview(file,img);
+			vm.upload(file);
+			console.log("2:"+vm.url)
+			vm.img1Url=vm.url;
+			console.log("3:"+vm.img1Url)
+			
+		 },
+		 img2: function(event){
+	    	var file=event.target.files[0];
+	    	if (file.size>1048576) {//单位为byte
+				alert('上传图片不能超过1MB，请重新选择!');
+				return;
+			}
+	    	
+			//var img = document.getElementById("image2");
+			//vm.preview(file,img);
+			vm.upload(file);
+			console.log("2:"+vm.url)
+			vm.img2Url=vm.url;
+			console.log("3:"+vm.img2Url)
+		 },
+		 img3: function(event){
+	    	var file=event.target.files[0];
+	    	if (file.size>1048576) {//单位为byte
+				alert('上传图片不能超过1MB，请重新选择!');
+				return;
+			}
+	    	
+			//var img = document.getElementById("image3");
+			//vm.preview(file,img);
+			vm.upload(file);
+			console.log("2:"+vm.url)
+			vm.img3Url=vm.url;
+			console.log("3:"+vm.img3Url)
+		 },
+	     update:  function(){
+	    	 
+	    	 if(vm.img1Url!=null||vm.img2Url!=null||vm.img3Url!=null){
+		    	 var aa=[vm.img1Url,vm.img2Url,vm.img3Url]
+		    	 var picPath=aa.join(",");
+	    		 vm.feed.picPath=picPath;
+	    	 }
+	    	 
+			if(isBlank(vm.feed.content)){
+				alert("请输入内容");
+				return true;
+			}
+			
+			if(isBlank(vm.feed.title)){
+				alert("请输入标题");
+				return true;
+			}
+	    	 
+	        $.ajax({
+	            url: baseURL +"/feedback/save",
+	            contentType:"application/json",
+	            type: 'POST',
+	            data: md5Method(vm.feed),
+	            success: function (r) {
+	            	if(r.code==0){
+		            	alert("提交成功", function(index){
+		            		window.location.reload();
+		                  });
+	            	}else{
+	            		alert(r.msg);
+	            	}
+	            }
+	        });
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

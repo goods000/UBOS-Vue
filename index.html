@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/swiper.min.css"/>
+		<style>
+		.bottom_nav dl dd:nth-child(1) a .dier {display: block !important;}
+		.bottom_nav dl dd:nth-child(1) a .diyi {display: none !important;}
+		.bottom_nav dl dd:nth-child(1) a span {color: #E69F20;}
+		</style>
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1">U B O S</h1>
+		<!--轮播-->
+		<!-- <div class="swiper-container swiper-container_sy">
+	        <div class="swiper-wrapper">
+	            <div class="swiper-slide"><img src="img/lunbo.png"/></div>
+	            <div class="swiper-slide"><img src="img/lunbo.png"/></div>
+	            <div class="swiper-slide"><img src="img/lunbo.png"/></div>
+	            <div class="swiper-slide"><img src="img/lunbo.png"/></div>
+	        </div>
+	    </div> -->
+	    <!-- Swiper -->
+	    <div class="swiper-container swiper-container_sy">
+		     <div class="swiper-wrapper">
+		      <div class="swiper-slide" v-for="(item,index) in bannerList" :key="index">
+		       	<img :src="item.path" style="width: 100%"/>
+		      </div>
+		     </div>
+		     <!-- <div class="swiper-pagination"></div> -->
+	    </div>
+	    <!--公告-->
+		<div id="notice">
+			<img src="img/gonggao.png" class="notice_img"/>
+			<marquee class="dia" scrollAmount=2 >{{title}}</marquee>
+			<a href="bulletin.html"><span class="tong">更多</span></a>	
+		</div>
+		
+		<!-- <div class="ul_box">
+			<ul>
+				<li>
+					<span class="">BTA/USDT</span>
+					<p>223,61</p>
+					<p>-1.11%</p>
+					<div class="">≈1.590.1779￥</div>
+				</li>
+				<li>
+					<span class="">BTC/USDT</span>
+					<p>8,272.52</p>
+					<p>-0.30%</p>
+					<div class="">≈58.879.1459￥</div>
+				</li>
+				<li>
+					<span class="">ETH/USDT</span>
+					<p class="green">182.91</p>
+					<p class="green">+0.10%</p>
+					<div class="">≈1.302.9189￥</div>
+				</li>
+			</ul>	
+		</div> -->
+		
+		<!--货币行情-->
+		<div class="hang_box">
+			<p class="hang_title">货币行情</p>
+			<div class="info">
+				<ul>
+					<li v-for="item in priceList">
+						<div class="info_box">
+							<!-- <p><b>ETH</b>/BTH</p>
+							<p>24H量33,511.45</p> -->
+							
+							<p style="font-size: 16px;">
+								{{item.curr.toUpperCase()}}
+							</p>
+						</div>
+						<div class="info_box">
+							<p>{{item.usd}}$</p>
+							<p>≈{{item.cny}}￥</p>
+						</div>
+						<div class="green" v-if="item.ugain>=0">+{{item.ugain}}%</div>
+						<div class="red" v-else>{{item.ugain}}%</div>
+					</li>
+					<!-- <li>
+						<div class="info_box">
+							<p><b>ETH</b>/BTH</p>
+							<p>24H量33,511.45</p>
+						</div>
+						<div class="info_box">
+							<p>0.022142</p>
+							<p>≈1,308.1729￥</p>
+						</div>
+						<div class="green">+0.33%</div>
+					</li>
+					<li>
+						<div class="info_box">
+							<p><b>BTCC</b>/BTH</p>
+							<p>24H量31.45</p>
+						</div>
+						<div class="info_box">
+							<p>0.022142</p>
+							<p>≈1,308.1729￥</p>
+						</div>
+						<div class="red">-0.50%</div>
+					</li>
+					<li>
+						<div class="info_box">
+							<p><b>LTC</b>/BTH</p>
+							<p>24H量33,511.45</p>
+						</div>
+						<div class="info_box">
+							<p>0.022142</p>
+							<p>≈1.1729￥</p>
+						</div>
+						<div class="red">-2.23%</div>
+					</li>
+					<li>
+						<div class="info_box">
+							<p><b>LTC</b>/BTH</p>
+							<p>24H量3333,511.45</p>
+						</div>
+						<div class="info_box">
+							<p>0.022142</p>
+							<p>≈1,308.1729￥</p>
+						</div>
+						<div class="red">-0.03%</div>
+					</li> -->
+				</ul>
+			</div>
+		</div>
+		
+		
+		
+		<!--导入底部导航栏-->
+		<div id="footer"></div>
+	</div>
+	</body>
+	
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js" ></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		title:null,
+		bannerList:{},
+		priceList:{}
+	},
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		getBulletin: function(){
+			$.get(baseURL + "bulletin/list", function(r){
+				isLogin(r);
+				console.log(r.list);
+				console.log(r.list.length);
+				if(r.list!=null){
+					vm.title=r.list[0].title;
+				}
+				
+			});
+		},
+		getPriceList: function(){
+			$.get(baseURL + "pricelog/list", function(r){
+				isLogin(r);
+				vm.priceList=r.list;
+			});
+		},
+		getBanner: function(){
+			$.get(baseURL + "banner/list/index", function(r){
+				isLogin(r);
+				if(r.list!=null){
+					vm.bannerList=r.list;
+				}
+				
+			});
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        //this.getUser();
+        this.getPriceList();
+        this.getBanner();
+        this.getBulletin();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+
+
+var swiper = new Swiper('.swiper-container', {
+    autoplay: true, //自动播放
+    loop: true,
+    observer:true,//修改swiper自己或子元素时，自动初始化swiper 
+    observeParents:false,//修改swiper的父元素时，自动初始化swiper
+    onSlideChangeEnd: function(s){
+		s.update();  
+		swiper.startAutoplay();
+		swiper.reLoop();  
+   }
+});
+</script>
+<script type="text/javascript">
+	/* var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        nextButton: '.swiper-button-next',
+        prevButton: '.swiper-button-prev',
+        slidesPerView: 1,
+        paginationClickable: true,
+        loop: true,
+        autoplay: 3500,
+        autoplayDisableOnInteraction: false
+    }); */
+	
+</script>
+</html>

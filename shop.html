@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css" "/>
+
+		<style>
+			.bottom_nav dl dd:nth-child(3) a .dier {display: block !important;}
+			.bottom_nav dl dd:nth-child(3) a .diyi {display: none !important;}
+			.bottom_nav dl dd:nth-child(3) a span {color: #E69F20;}
+		</style>
+	</head>
+	<body>
+		<div id="app" v-cloak>
+			<h1 class="h1">交易</h1>
+			<div class="zi_box">
+				<div class="zi_title">
+					<span>USDT</span>
+					<!--<span onclick="javascript:location.href='account_log.html?currType=usdt'">资金明细</span>-->
+				</div>
+				<div class="num_box">
+					<p>当前余额</p>
+					<b>{{account.usdtNum}}</b>
+				</div>
+				<div class="cao_title">
+					<a href="import.html"><img src="img/chong.png"/><i>充币</i></a>
+					<span id="line"></span>
+					<a href="convert.html?currType=usdt"><img src="img/dui.png"/><i>兑换</i></a>
+					<span id="line"></span>
+					<a href="cash.html?currType=usdt"><img src="img/ti.png"/><i>提币</i></a>
+					<!--<span id="line"></span>
+					<a href="lock.html"><img src="img/so.png"/><i>锁仓</i></a>-->
+				</div>
+			</div>
+		
+			<!--底部导航栏-->
+			<div id="footer"></div>
+		</div>
+	</body>
+	
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/swiper.min.js" ></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+	var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		bulletinList:{}
+	},
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				console.log(this.user);
+				vm.account = r.account;
+			});
+		},
+		getBulletin: function(){
+			$.get(baseURL + "bulletin/list", function(r){
+				isLogin(r);
+				if(r.list!=null){
+					vm.title=r.list[r.list.length-1].title;
+				}
+				
+			});
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getUser();
+        this.getBulletin();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+
+	// $(document).ready(function(){
+	// 	layer.msg('暂未开放,敬请期待!',{icon:6,time:1000});
+	// })
+</script>
+</html>

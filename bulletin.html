@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<h1 class="h1"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>公告</h1>
+		<div class="news" id="app" v-cloak>
+			<ul>
+				<a  v-for="item in list" :href="'bulletin_detail.html?id='+item.id" >
+					<li>
+						<div class="div">
+							<div class="l">
+								<p class="title">{{item.title}}</p>
+								<p class="time">{{item.createTime}}</p>
+							</div>
+							<img src="img/more.png" class="ico">
+						</div>
+					</li>
+				</a>
+				<!-- <a href="bulletin_detail.html">
+					<li>
+						<div class="div">
+							<div class="l">
+								<p class="title">:nth-child()和:first-child - 简书</p>
+								<p class="time">2018.07.23</p>
+							</div>
+							<img src="img/more.png" class="ico">
+						</div>
+					</li>
+				</a> -->
+			</ul>
+		</div>
+	</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		list:{}
+	},
+	methods: {
+		getList: function(){
+			$.get(baseURL + "bulletin/list", function(r){
+				isLogin(r);
+				vm.list = r.list;
+			});
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getList();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<script src="js/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<h1 class="h1"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>公告详情</h1>
+		<div class="news_detail" id="app" v-cloak>
+			<p class="title">{{item.title}}</p>
+			<p class="time">{{item.createTime}}</p>
+			<div class="con" v-html="item.content">
+			</div>
+		</div>
+	</body>
+	
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		item:{}
+	},
+	methods: {
+		getItem: function(){
+			$.get(baseURL + "bulletin/info/"+getParameter("id"), function(r){
+				isLogin(r);
+				vm.item = r.item;
+			});
+		}
+	},
+	created: function(){
+        this.getItem();
+    }
+});
+</script>
+</html>

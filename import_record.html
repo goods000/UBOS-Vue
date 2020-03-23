@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/public.js"></script>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/font.css" />
+	</head>
+<body>
+<h1 class="h1"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>充币记录</h1>
+<div class="record tixn_record" id="app" v-cloak>
+    <ul id="list">
+        <li v-for="item in list">
+			<p><s>币种</s>：
+				<template v-if="item.currType==='usdt'">
+            		USDT
+            	</template>	
+            	<template v-else-if="item.currType==='ubos'">
+            		UBOS
+            	</template>
+			</p>
+			<i>数量：{{item.amount}}</i>
+			<span>时间：{{item.createTime}}</span>
+			<!-- <h2>地址：<u>0x1c6984a4688412b5e3f7617517d213fa6c983f54</u></h2> -->
+        </li>
+    </ul>
+</div>
+</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		list:{}
+	},
+	methods: {
+		getList: function(){
+			$.get(baseURL + "import/list", function(r){
+				isLogin(r);
+				vm.list = r.list;
+			});
+		},
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getList();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>

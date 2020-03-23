@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1 di"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>锁仓</h1>
+		<form action="" method="post" class="form_lock">
+			<!-- <div class="bb">
+				<div class="with">
+					<p>UBOS余额</p>
+					<input type="text" readonly="readonly" v-model="account.usdtNum"/>
+					
+					<p>复投钱包余额</p>
+					<input type="text" readonly="readonly" v-model="account.repeatNum"/>
+					
+				</div>
+			</div> -->
+			<div class="bb">
+				<div class="with">
+					<p>锁仓数量</p>
+					<div class="with_box">
+						<img src="img/unm.png"/>
+						<input type="number" placeholder="请输入锁仓数量"  v-model="lock.amount" /><!-- @change="calculate" -->
+					</div>
+				</div>
+				<div class="with">
+					<p>锁仓方式选择</p>
+					<div class="with_box">
+						<input class="radio_type" type="radio" name="type" value="usdt" v-model="lock.type"/> 
+						<label for="radio1">USDT锁仓</label>
+						<input class="radio_type" type="radio" name="type" value="usdt_and_repeat" v-model="lock.type"/>
+						<label for="radio2">USDT+复投锁仓</label>
+					</div>
+				</div>
+			</div>
+			<div class="bb">
+				<div class="with">
+					<p>USDT使用数量</p>
+					<div class="with_box">
+						<img src="img/unm.png"/>
+						<input type="number" placeholder="请输入使用数量" v-model="lock.usdtAmount"/><!-- @change="calculate" -->
+						<span class="span">(钱包余额:{{account.usdtNum}})</span>
+					</div>
+				</div>
+				<div class="with" v-show="lock.type=='usdt_and_repeat'">
+					<p>复投钱包使用数量</p> <p class="jg">价格{{ubosPrice}}</p>
+					<div class="with_box">
+						<img src="img/unm.png"/>
+						<input type="number" placeholder="请输入使用数量"  v-model="lock.repeatAmount" readonly="readonly"/>
+						<span class="span">(钱包余额:{{account.repeatNum}},<br/>最多使用:{{repeatLimitScale*100}}%)</span>
+						<br>
+						<!-- <span class="span">价格{{ubosPrice}}</span> -->
+					</div>
+				</div>
+				<div class="with">
+					<p>交易密码</p>
+					<div class="with_box">
+						<img src="img/psd.png"/>
+						<input type="password" placeholder="请输入您的交易密码" v-model="lock.payPassword"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="e_btn">
+				<input type="button" id="sub" class="yzbutton" value="确认锁仓" @click="lockApply"/>
+			</div>
+		</form>
+		</div>
+	</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		repeatLimitScale:0,
+		ubosPrice:1,
+		lock:{type:'usdt',amount:null,usdtAmount:null,repeatAmount:null}
+	},
+	watch: {
+		deep: true,
+		immediate: true,
+		'lock.type': function () {
+			if(vm.lock.type=='usdt_and_repeat'&&vm.lock.amount!=null){
+            	vm.lock.usdtAmount =vm.lock.amount*(1-vm.repeatLimitScale);
+            	vm.calculate();
+			}else{
+				vm.lock.usdtAmount=vm.lock.amount;
+			}
+			
+        },
+        'lock.amount': function () {
+        	if(vm.lock.type=='usdt_and_repeat'&&vm.lock.amount!=null){
+            	vm.lock.usdtAmount =vm.lock.amount*(1-vm.repeatLimitScale);
+            	vm.calculate();
+			}else{
+				vm.lock.usdtAmount=vm.lock.amount;
+			}
+        },
+        'lock.usdtAmount': function () {
+			if(vm.lock.type=='usdt_and_repeat'&&vm.lock.amount!=null){
+				vm.calculate();
+			}else{
+				vm.lock.usdtAmount=vm.lock.amount;
+			}
+        }
+    },
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		index: function(){
+			$.get(baseURL + "lock/index", function(r){
+				isLogin(r);
+				vm.repeatLimitScale=r.repeatLimitScale;
+				vm.ubosPrice=r.ubosPrice;
+			});
+		},
+		calculate: function(){
+			if(Number(vm.lock.usdtAmount)>Number(vm.lock.amount)){
+				//alert('USDT数量大于锁仓数量');
+				layer.msg('USDT数量大于锁仓数量',{icon:6,time:1000});
+				return true;
+			}
+			
+			var futoujiazhi=vm.lock.amount-vm.lock.usdtAmount;
+			var ss=(futoujiazhi/vm.lock.amount).toFixed(2);
+			if(ss>vm.repeatLimitScale){
+				//alert('超过'+vm.repeatLimitScale*100+'%了');
+				layer.msg('超过'+vm.repeatLimitScale*100+'%了',{icon:6,time:1000});
+				return true;
+			}
+			vm.lock.repeatAmount =(futoujiazhi/vm.ubosPrice).toFixed(2);
+		},
+		calculate11111: function(){
+			if(vm.lock.type=='usdt_and_repeat'&&vm.lock.amount!=null&&vm.lock.usdtAmount!=null){
+				$.ajax({
+		            type: "POST",
+		            contentType:"application/json",
+		            url:baseURL +'lock/calculate',
+		            data:JSON.stringify(vm.lock),//JSON.stringify(vm.cash)
+		            async: false,
+		            success: function(r) {
+		            	isLogin(r);
+		            	if(r.code==0){
+		            		vm.lock=r.lock;
+						}else{
+							alert(r.msg);
+						}
+		            }
+		        });
+			}
+			
+		},
+		lockApply: function(){
+			if(vm.validator()){return;}
+			if(vm.calculate()){return;}
+			$.ajax({
+	            type: "POST",
+	            contentType:"application/json",
+	            url:baseURL +'lock/lock',
+	            data:md5Method(vm.lock),//JSON.stringify(vm.cash)
+	            async: false,
+	            success: function(r) {
+	            	isLogin(r);
+	            	if(r.code==0){
+						alert('提交成功', function(){
+							vm.getUser();
+							vm.lock.amount=null;
+							vm.lock.repeatAmount=null;
+							vm.lock.payPassword=null;
+						});
+					}else{
+						alert(r.msg);
+					}
+	            }
+	        });
+		},
+		validator: function () {
+			if(isBlank(vm.lock.amount)){
+                alert("请输入锁仓数量");
+                return true;
+            }
+            if(isBlank(vm.lock.usdtAmount)){
+                alert("请输入USDT数量");
+                return true;
+            }
+           	if(isBlank(vm.lock.payPassword)){
+                  alert("请输入交易密码");
+                  return true;
+   			}
+        },
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+        this.getUser();
+        this.index();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>

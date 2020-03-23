@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <title></title>
+	    <link rel="stylesheet" href="css/style.css" />
+	    <link rel="stylesheet" href="css/font.css" />
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		<h1 class="h1 di"><button class="iconfont icon-xiangzuo1" onclick="javascript:window.history.back(-1);"></button>提币<a href="cash_record.html">提币记录</a></h1>
+		<form action="" method="post" class="form">
+			<div class="bb">
+				<div class="with">
+					<p>钱包余额</p>
+					<input type="text" readonly="readonly" v-model="account.usdtNum" v-show="cash.currType=='usdt'"/>
+					<input type="text" readonly="readonly" v-model="account.repeatNum" v-show="cash.currType=='repeat'"/>
+				</div>
+				<div class="with">
+					<p>提币数量</p>
+					<div class="with_box">
+						<img src="img/unm.png"/>
+						<input type="number" placeholder="请输入提币数量" v-model="cash.amount"/>
+						<span class="span" @click="stud">全部</span>
+					</div>
+				</div>
+			</div>
+			<div class="bb">
+				<div class="with">
+					<p>手续费用</p>
+					<div class="with_box">
+						<p>{{fee}}</p>
+						<span class="span" >{{feeScale+'%'}}</span>
+					</div>
+					
+				</div>
+				<div class="with">
+					<p>提币地址</p>
+					<div class="with_box">
+						<img src="img/address.png"/>
+						<input type="text" placeholder="请输入您的提币地址" v-model="cash.address"/>
+					</div>
+				</div>
+				<div class="with">
+					<p>交易密码</p>
+					<div class="with_box">
+						<img src="img/psd.png"/>
+						<input type="password" placeholder="请输入您的交易密码" v-model="cash.payPassword"/>
+					</div>
+				</div>
+			</div>
+			
+			<div class="e_btn">
+				<input type="button" id="sub" class="yzbutton" value="确认提币" @click="cashApply"/>
+			</div>
+		</form>
+	</div>
+	</body>
+<script type="text/javascript" src="js/zhaler/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/zhaler/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/core.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/md5.js"></script>
+<script type="text/javascript" src="js/zhaler/encrypt/encrypt.js"></script>
+<script type="text/javascript" src="js/public.js" ></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
+<script type="text/javascript" src="js/zhaler/vue.min.js"></script>
+<script type="text/javascript" src="js/zhaler/validator.js"></script>
+<script type="text/javascript" src="js/zhaler/config.js"></script>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+		currency:null,
+		user:{username:null},
+		account:{},
+		cash:{currType:'ubos',amount:null},
+		upperLimit:0,
+		feeScale:0,
+		fee:0
+	},
+	watch: {
+		deep: true,
+		immediate: true,
+		'cash.amount': function () {
+			if(this.cash.amount==null)return;
+            this.fee = (this.cash.amount*(this.feeScale/100)).toFixed(2);
+        }
+    },
+	methods: {
+		getUser: function(){
+			$.get(baseURL + "user/info", function(r){
+				isLogin(r);
+
+				vm.user = r.user;
+				console.log(r.user);
+				vm.account = r.account;
+			});
+		},
+		stud: function(){
+			var amount=null;
+			if(vm.cash.currType=='ubos'){
+				amount=vm.account.ubosNum;
+			}else if(vm.cash.currType=='usdt'){
+				amount=vm.account.usdtNum;
+			}else if(vm.cash.currType=='repeat'){
+				amount=vm.account.repeatNum;
+			}
+			this.cash.amount=amount;
+		},
+		index: function(){
+			$.get(baseURL + "cash/index/"+getParameter("currType"), function(r){
+				isLogin(r);
+				vm.upperLimit=r.upperLimit;
+				vm.feeScale=r.feeScale;
+			});
+		},
+		cashApply: function(){
+			if(vm.validator()){return;}
+			
+			$.ajax({
+	            type: "POST",
+	            contentType:"application/json",
+	            url:baseURL +'cash/apply',
+	            data:md5Method(vm.cash),
+	            async: false,
+	            success: function(r) {
+	            	isLogin(r);
+	            	if(r.code==0){
+						alert('提交成功', function(){
+							vm.getUser();
+							vm.cash={amount:null,address:null,password:null}
+						});
+					}else{
+						alert(r.msg);
+					}
+	            }
+	        });
+		},
+		validator: function () {
+            if(isBlank(vm.cash.amount)){
+                alert("请输入数量");
+                return true;
+            }
+           	if(isBlank(vm.cash.address)){
+                 alert("请输入地址");
+                 return true;
+   			}if(isBlank(vm.cash.payPassword)){
+                alert("请输入交易密码");
+                return true;
+ 			}
+        },
+		getSessionCurrency: function(){
+			this.currency=getCurrency();
+		}
+	},
+	created: function(){
+		this.cash.currType=getParameter("currType")
+        this.getUser();
+		this.index();
+        this.getSessionCurrency();
+		
+		
+    }
+});
+</script>
+</html>
